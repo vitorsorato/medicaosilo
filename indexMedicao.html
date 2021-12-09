@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt" id="idHTML">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="favicon" href="favicon.ico" />
+        <title>Medidor de Volume</title>
+    </head>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getDatabase, ref, set, onValue} from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIlHn_4NN2JZFjb8oE_erzSymOYlNH16k",
+            authDomain: "medicaosilo.firebaseapp.com",
+            databaseURL:"https://medicaosilo-default-rtdb.firebaseio.com/",
+            projectId: "medicaosilo",
+            storageBucket: "medicaosilo.appspot.com",
+            messagingSenderId: "1020073943017",
+            appId: "1:1020073943017:web:27d461b0bc599f831ab578"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+
+        onValue(ref(db, 'volume'), (snapshot) => {
+            if(parseFloat(snapshot.val()) <= 5){
+                document.getElementById("valVolume").innerHTML = snapshot.val() + "m³ </br> Nível crítico!";
+                document.getElementById("idBody").style.background = "#CD574F";
+                document.getElementById("idHTML").style.background = "#CD574F";
+                document.getElementById("abastecimentoSquare").style.background = "#560C0C";
+
+                console.log(new Date);
+
+            }else{
+                document.getElementById("valVolume").innerHTML = snapshot.val() + "m³";
+                document.getElementById("idBody").style.background = "#A5BEFF";
+                document.getElementById("idHTML").style.background = "#A5BEFF";
+                document.getElementById("abastecimentoSquare").style.background = "#1a237d";
+                
+            }
+        });
+
+        onValue(ref(db, 'abastecimento'), (snapshot) => {
+            document.getElementById("valAbastecimento").innerHTML = snapshot.val() + "%";
+            document.getElementById("abastecimentoSquare").style.transform = "scaleY(" + (parseInt(snapshot.val())/100) + ")";
+        });
+
+        onValue(ref(db, 'lampada'), (snapshot) => {
+            document.getElementById("valLampada").innerHTML = snapshot.val();
+            if(snapshot.val() == "Apagada"){
+                document.getElementById("triangle").style.borderColor = "transparent transparent #6182a8c7 transparent";
+                document.getElementById("square").style.background = "#6182a8c7";
+            }else{
+                document.getElementById("triangle").style.borderColor = "transparent transparent #FAF4C4 transparent";
+                document.getElementById("square").style.background = "#FAF4C4";
+            }
+        });
+
+        onValue(ref(db, 'data'), (snapshot) => {
+            document.getElementById("valAtualizacao").innerHTML = snapshot.val();
+        });
+
+    </script>
+
+    <body id="idBody">
+        <ul class="container">
+            <div class="triangle-up" id="triangle">
+            </div>
+            <div class="square" id="square">
+                <div id="abastecimentoSquare" class="part"></div>
+            </div>
+            <div>
+                </br>
+                </br>
+            </div>
+            <div>
+                Volume
+            </div>
+            <h1 id="valVolume">
+                00m³
+            </h1>
+            <div>
+                </br>
+            </div>
+            <div>
+                Abastecimento
+            </div>
+            <h1 id="valAbastecimento">
+                00.0%
+            </h1>
+            <div>
+                </br>
+            </div>
+            <div>
+                Lâmpada
+            </div>
+            <h1 id="valLampada">
+                XXXXX
+            </h1>
+            <div>
+                </br>
+            </div>
+            <div>
+                Ultima Atualização
+            </div>
+            <h2 id="valAtualizacao">
+                00/00/00 00:00
+            </h2>
+            <div>
+                </br>
+            </div>
+        </ul>
+    </body>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap');        *{
+          margin: 0px;
+          padding: 0px;
+        }
+        html, body{
+            background: #A5BEFF;
+            font-family: 'Comfortaa', cursive;            
+            padding: 40px 0;
+            color: rgb(12, 15, 82);
+            font-size: 25px;
+            margin: 20px;
+            transition: 1s ease-in-out; 
+        }
+
+        .container {
+            margin: 0 auto;
+            width: 400px;
+            
+        }
+
+        .triangle-up {
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 0 150px 100px 150px;
+          border-color: transparent transparent #FAF4C4 transparent;
+          top: 20%;
+          left: 30px;
+          position: relative;
+          transition: 1s ease-in-out;
+          transition: 1s ease-in-out; 
+        }
+        .square{
+          width: 300px;
+          height: 100px;
+          position: relative;
+          top: 20%;
+          left: 30px;
+          background: #FAF4C4;
+          transition: 1s ease-in-out;
+        }
+        .part{
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: #1a237d;
+          transform: scaleY(0.2);
+          transform-origin: center bottom;
+          transition: 1s ease-in-out;        
+        }
+      </style>
+</html>
