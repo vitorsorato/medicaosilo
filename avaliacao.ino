@@ -16,12 +16,12 @@
 
 AsyncWebServer server(80);
 
-const char* ssid = "Richard";
-const char* password = "0808viga";
+const char* ssid = "SATC IOT";
+const char* password = "IOT2021#";
 
 const char* PARAM_INPUT_1 = "input1";
 
-
+//vitor 
 //#define rPin 12 //D6
 //#define gPin 14 //D5
 //#define bPin 0  //D3
@@ -86,6 +86,8 @@ void setup() {
   if (request->hasParam(PARAM_INPUT_1)) {
     inputMessage = request->getParam(PARAM_INPUT_1)->value();
     inputParam = PARAM_INPUT_1;
+        server.end();
+    
   }
   else {
     inputMessage = "Sem mensagem enviada";
